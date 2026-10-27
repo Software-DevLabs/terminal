@@ -47,7 +47,8 @@ not a mock: every pane is a real PowerShell or `cmd.exe` process.
   code workspace start where you are instead of at the app's install folder.
 - `Ctrl + Shift + K` clears the screen and the replay buffer, so cleared output never
   comes back after scrolling or reloading.
-- Layout, tabs, panes, per-pane cwd, theme, font size, and keybindings survive restarts.
+- Layout, tabs, panes, per-pane cwd, theme, font size, window opacity, and keybindings
+  survive restarts.
 
 ### Window and tabs
 
@@ -81,6 +82,10 @@ not a mock: every pane is a real PowerShell or `cmd.exe` process.
 
 - Two built-in themes: **Basic** (light) and **Homebrew** (dark).
 - Theme toggle with `Ctrl + Shift + L`; chrome colors follow automatically.
+- Window transparency is adjustable with `Alt + =` and `Alt + -` (5% steps, down to
+  30% opacity). The whole window fades — titlebar, panes, and the terminal surface
+  itself — while text stays fully opaque. It shows a live percentage and persists
+  across restarts.
 - Settings panel (`Ctrl + ,`) for theme, font size, and every global shortcut.
 - Shortcut recorder rejects bare keys and duplicate bindings, and supports resetting
   individual actions to the configured defaults.
@@ -133,6 +138,8 @@ workspace keys marked as fixed are handled by the workspace itself.
 | `Ctrl + Shift + =` | Increase font size |
 | `Ctrl + Shift + -` | Decrease font size |
 | `Ctrl + Shift + 0` | Reset font size |
+| `Alt + =` | Increase window transparency |
+| `Alt + -` | Decrease window transparency |
 | `Ctrl + ,` | Open settings |
 | `Shift + Alt + W` | Open or close the code workspace |
 

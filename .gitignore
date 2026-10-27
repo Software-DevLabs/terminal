@@ -3,5 +3,8 @@ dist/
 vendor/
 src-tauri/target/
 src-tauri/gen/
+.ui-check/
+downloads/
 *.log
 .DS_Store
+.npmrc

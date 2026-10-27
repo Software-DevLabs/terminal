@@ -48,6 +48,7 @@ export function createTerminal(
 ): TerminalHandle {
   const term = new Terminal({
     allowProposedApi: true,
+    allowTransparency: true,
     cursorBlink: config.cursorBlink,
     cursorStyle: config.cursorStyle,
     disableStdin: false,

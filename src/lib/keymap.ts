@@ -46,7 +46,11 @@ export function parseChord(chord: string): Chord {
 export function matchesChord(chord: string, event: KeyboardEvent): boolean {
   const parsed = parseChord(chord);
   if (event.ctrlKey !== parsed.ctrl) return false;
-  if (event.shiftKey !== parsed.shift) return false;
+  if (event.shiftKey !== parsed.shift) {
+    // '+' and '-' need Shift on standard layouts; accept both spellings.
+    const symbol = parsed.key === 'equal' || parsed.key === 'minus';
+    if (!symbol || parsed.shift) return false;
+  }
   if (event.altKey !== parsed.alt) return false;
   if (event.metaKey !== parsed.meta) return false;
   return normalizeKey(event.key) === parsed.key;

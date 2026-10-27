@@ -734,7 +734,10 @@ body {
   cursor: default;
 }
 
+/* xterm.css paints the viewport #000; keep it clear so the window tint (and the
+   desktop behind it) shows through the whole terminal, not just the chrome. */
 .xterm .xterm-viewport {
+  background-color: transparent !important;
   scrollbar-color: rgba(140, 140, 140, 0.55) transparent;
   scrollbar-width: thin;
 }

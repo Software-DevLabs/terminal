@@ -36,6 +36,8 @@ export const SHORTCUT_GROUPS: ShortcutGroup[] = [
       { action: 'fontUp', label: 'Increase font size' },
       { action: 'fontDown', label: 'Decrease font size' },
       { action: 'fontReset', label: 'Reset font size' },
+      { action: 'transparencyUp', label: 'Increase window transparency' },
+      { action: 'transparencyDown', label: 'Decrease window transparency' },
       { action: 'toggleTheme', label: 'Cycle theme' },
       { action: 'find', label: 'Find in scrollback' },
       { action: 'workspace', label: 'Open the code workspace' },

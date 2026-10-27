@@ -1,7 +1,7 @@
 {
   "name": "macterm",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "A Mac-Terminal-styled terminal for Windows with tmux-style panes, rendered by xterm.js.",
   "engines": {

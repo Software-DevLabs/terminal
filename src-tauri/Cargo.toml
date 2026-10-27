@@ -1,6 +1,6 @@
 [package]
 name = "macterm"
-version = "0.1.0"
+version = "0.2.0"
 description = "A Mac-Terminal-styled terminal for Windows with tmux-style panes"
 edition = "2021"
 rust-version = "1.77"

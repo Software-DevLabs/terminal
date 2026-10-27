@@ -93,6 +93,8 @@
     "fontUp": "ctrl+shift+equal",
     "fontDown": "ctrl+shift+minus",
     "fontReset": "ctrl+shift+0",
+    "transparencyUp": "alt+equal",
+    "transparencyDown": "alt+minus",
     "toggleTheme": "ctrl+shift+l",
     "find": "ctrl+shift+f",
     "clearBuffer": "ctrl+shift+k",

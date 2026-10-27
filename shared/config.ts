@@ -49,6 +49,8 @@ export type ActionName =
   | 'fontUp'
   | 'fontDown'
   | 'fontReset'
+  | 'transparencyUp'
+  | 'transparencyDown'
   | 'toggleTheme'
   | 'find'
   | 'clearBuffer'
@@ -87,6 +89,8 @@ export const ACTIONS: ActionName[] = [
   'fontUp',
   'fontDown',
   'fontReset',
+  'transparencyUp',
+  'transparencyDown',
   'toggleTheme',
   'find',
   'clearBuffer',

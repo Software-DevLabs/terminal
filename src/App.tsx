@@ -42,6 +42,7 @@ const initialWorkspaceReopen = (() => {
 interface Prefs {
   theme: string | null;
   fontSize: number | null;
+  opacity: number | null;
   keymap: Partial<Record<ActionName, string>> | null;
 }
 
@@ -52,6 +53,7 @@ function readPrefs(): Prefs {
       return {
         theme: null,
         fontSize: null,
+        opacity: null,
         keymap: null,
         ...(JSON.parse(raw) as Partial<Prefs>),
       };
@@ -59,7 +61,7 @@ function readPrefs(): Prefs {
   } catch {
     // fall through to defaults
   }
-  return { theme: null, fontSize: null, keymap: null };
+  return { theme: null, fontSize: null, opacity: null, keymap: null };
 }
 
 function reviveLayout(raw: unknown): LayoutState | null {
@@ -72,6 +74,7 @@ function reviveLayout(raw: unknown): LayoutState | null {
 
 export function App({ config }: { config: ServerConfig }) {
   const [prefs, setPrefs] = useState<Prefs>(readPrefs);
+  const prefsRef = useRef(prefs);
 
   const makePane = useCallback(
     (): PaneNode => ({ kind: 'pane', id: uid('pane-'), sessionId: uid('s-'), shell: config.shell }),
@@ -108,6 +111,11 @@ export function App({ config }: { config: ServerConfig }) {
   const themeName = prefs.theme ?? config.theme;
   const theme = useMemo(() => themeOf(config, themeName), [config, themeName]);
   const fontSize = prefs.fontSize ?? config.font.size;
+  const opacity = Math.min(1, Math.max(0.3, prefs.opacity ?? 1));
+  const windowBackground = useMemo(() => withAlpha(theme.background, opacity), [theme.background, opacity]);
+  // The window fill carries the background color (and its alpha); keeping the
+  // terminal canvas transparent avoids compositing the same tint twice.
+  const terminalTheme = useMemo(() => ({ ...theme, background: 'rgba(0, 0, 0, 0)' }), [theme]);
   const keymap = useMemo<Record<ActionName, string>>(
     () => ({ ...config.keymap, ...(prefs.keymap ?? {}) }),
     [config.keymap, prefs.keymap],
@@ -195,6 +203,7 @@ export function App({ config }: { config: ServerConfig }) {
   }, [elevating, system?.canElevate, showToast]);
 
   const persistPrefs = useCallback((next: Prefs) => {
+    prefsRef.current = next;
     setPrefs(next);
     try {
       localStorage.setItem(PREFS_KEY, JSON.stringify(next));
@@ -203,6 +212,16 @@ export function App({ config }: { config: ServerConfig }) {
     }
   }, []);
 
+  const adjustTransparency = useCallback(
+    (delta: number) => {
+      const current = Math.min(1, Math.max(0.3, prefsRef.current.opacity ?? 1));
+      const next = Math.min(1, Math.max(0.3, Math.round((current + delta) * 100) / 100));
+      persistPrefs({ ...prefsRef.current, opacity: next });
+      showToast(transparencyLabel(next));
+    },
+    [persistPrefs, showToast],
+  );
+
   const saveSettings = useCallback(
     (next: SettingsDraft) => {
       const overrides: Partial<Record<ActionName, string>> = {};
@@ -210,10 +229,10 @@ export function App({ config }: { config: ServerConfig }) {
         const chord = next.keymap[action] ?? '';
         if (chord !== config.keymap[action]) overrides[action] = chord;
       }
-      persistPrefs({ theme: next.theme, fontSize: next.fontSize, keymap: overrides });
+      persistPrefs({ theme: next.theme, fontSize: next.fontSize, opacity: prefs.opacity, keymap: overrides });
       setSettingsOpen(false);
     },
-    [config.keymap, persistPrefs],
+    [config.keymap, persistPrefs, prefs.opacity],
   );
 
   const register = useCallback((paneId: string, api: PaneApi | null) => {
@@ -272,6 +291,8 @@ export function App({ config }: { config: ServerConfig }) {
       fontUp: () => persistPrefs({ ...prefs, fontSize: Math.min(28, fontSize + 0.5) }),
       fontDown: () => persistPrefs({ ...prefs, fontSize: Math.max(9, fontSize - 0.5) }),
       fontReset: () => persistPrefs({ ...prefs, fontSize: null }),
+      transparencyUp: () => adjustTransparency(-0.05),
+      transparencyDown: () => adjustTransparency(0.05),
       toggleTheme: () => {
         const names = Object.keys(config.themes);
         const index = names.indexOf(themeName);
@@ -288,6 +309,7 @@ export function App({ config }: { config: ServerConfig }) {
     }),
     [
       activePaneId,
+      adjustTransparency,
       closePane,
       config.themes,
       dispatch,
@@ -320,7 +342,7 @@ export function App({ config }: { config: ServerConfig }) {
     <div className="desktop">
       <WindowFrame
         dark={isDark(theme.background)}
-        background={theme.background}
+        background={windowBackground}
         tabs={tabs}
         activeTab={layout.activeTab}
         elevated={system?.elevated ?? false}
@@ -336,7 +358,7 @@ export function App({ config }: { config: ServerConfig }) {
           <PaneTree
             root={activeTab.root}
             config={activeConfig}
-            theme={theme}
+            theme={terminalTheme}
             activePane={activePaneId}
             zoomId={layout.zoomedPane}
             onFocus={focusPane}
@@ -404,4 +426,18 @@ function isDark(background: string): boolean {
   const g = Number.parseInt(hex.slice(2, 4), 16);
   const b = Number.parseInt(hex.slice(4, 6), 16);
   return (r * 299 + g * 587 + b * 114) / 1000 < 128;
+}
+
+function transparencyLabel(opacity: number): string {
+  return `Window transparency ${Math.round((1 - opacity) * 100)}%`;
+}
+
+function withAlpha(color: string, alpha: number): string {
+  const hex = color.trim().replace(/^#/, '');
+  const full = hex.length === 3 ? hex.split('').map((part) => part + part).join('') : hex;
+  if (!/^[0-9a-f]{6}$/i.test(full)) return color;
+  const r = Number.parseInt(full.slice(0, 2), 16);
+  const g = Number.parseInt(full.slice(2, 4), 16);
+  const b = Number.parseInt(full.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
