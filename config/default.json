@@ -1,0 +1,103 @@
+{
+  "shell": "powershell",
+  "theme": "mac-light",
+  "font": {
+    "family": "Cascadia Mono",
+    "size": 13.5,
+    "boldIsBright": true
+  },
+  "scrollback": 10000,
+  "cursorStyle": "block",
+  "cursorBlink": true,
+  "shellIntegration": true,
+  "shells": {
+    "powershell": {
+      "label": "Windows PowerShell",
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoExit",
+        "-Command",
+        "$global:__mactermPrompt = $function:prompt; function global:prompt { $p = (Get-Location).ProviderPath; [Console]::Write(([char]27) + ']7;file://' + $env:COMPUTERNAME + '/' + ($p -replace '\\\\', '/') + [char]7); if ($global:__mactermPrompt) { & $global:__mactermPrompt } else { 'PS ' + $p + '> ' } }"
+      ]
+    },
+    "cmd": {
+      "label": "Command Prompt",
+      "path": "C:\\Windows\\System32\\cmd.exe",
+      "args": []
+    }
+  },
+  "themes": {
+    "mac-light": {
+      "label": "Basic",
+      "background": "#ffffff",
+      "foreground": "#000000",
+      "cursor": "#000000",
+      "selection": "rgba(0, 89, 199, 0.35)",
+      "black": "#000000",
+      "red": "#990000",
+      "green": "#00a600",
+      "yellow": "#999900",
+      "blue": "#0000b2",
+      "magenta": "#b200b2",
+      "cyan": "#00a6b2",
+      "white": "#bfbfbf",
+      "brightBlack": "#666666",
+      "brightRed": "#e50000",
+      "brightGreen": "#00d900",
+      "brightYellow": "#e5e500",
+      "brightBlue": "#0000ff",
+      "brightMagenta": "#e500e5",
+      "brightCyan": "#00e5e5",
+      "brightWhite": "#e5e5e5"
+    },
+    "mac-dark": {
+      "label": "Homebrew",
+      "background": "#1e1e1e",
+      "foreground": "#ffffff",
+      "cursor": "#ffffff",
+      "selection": "rgba(60, 120, 210, 0.40)",
+      "black": "#000000",
+      "red": "#990000",
+      "green": "#00a600",
+      "yellow": "#999900",
+      "blue": "#0000b2",
+      "magenta": "#b200b2",
+      "cyan": "#00a6b2",
+      "white": "#bfbfbf",
+      "brightBlack": "#666666",
+      "brightRed": "#e50000",
+      "brightGreen": "#00d900",
+      "brightYellow": "#e5e500",
+      "brightBlue": "#5c5cff",
+      "brightMagenta": "#e500e5",
+      "brightCyan": "#00e5e5",
+      "brightWhite": "#e5e5e5"
+    }
+  },
+  "keymap": {
+    "newTab": "ctrl+shift+t",
+    "closeTab": "ctrl+shift+w",
+    "closePane": "ctrl+shift+x",
+    "splitRight": "ctrl+shift+e",
+    "splitDown": "ctrl+shift+o",
+    "focusNext": "ctrl+shift+space",
+    "focusLeft": "alt+left",
+    "focusRight": "alt+right",
+    "focusUp": "alt+up",
+    "focusDown": "alt+down",
+    "prevTab": "ctrl+alt+left",
+    "nextTab": "ctrl+alt+right",
+    "zoomPane": "ctrl+shift+z",
+    "equalizePanes": "ctrl+shift+u",
+    "fontUp": "ctrl+shift+equal",
+    "fontDown": "ctrl+shift+minus",
+    "fontReset": "ctrl+shift+0",
+    "toggleTheme": "ctrl+shift+l",
+    "find": "ctrl+shift+f",
+    "clearBuffer": "ctrl+shift+k",
+    "help": "ctrl+shift+h",
+    "settings": "ctrl+comma",
+    "workspace": "shift+alt+w"
+  }
+}

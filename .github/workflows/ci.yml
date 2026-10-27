@@ -1,0 +1,61 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: typecheck, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: install
+        run: bun install --frozen-lockfile
+
+      - name: typecheck
+        run: bun run typecheck
+
+      - name: unit tests
+        run: bun test
+
+      - name: bundle
+        run: bun run build
+
+  rust:
+    name: cargo check
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: install
+        run: bun install --frozen-lockfile
+
+      # `generate_context!` embeds the built frontend and the bundler expects the
+      # node runtime resource to exist, so build those before checking rust.
+      - name: stage frontend and runtime
+        run: bun run build:bundle
+
+      - name: cargo check
+        run: cargo check --manifest-path src-tauri/Cargo.toml

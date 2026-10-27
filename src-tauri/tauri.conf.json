@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "macterm",
+  "version": "0.1.0",
+  "identifier": "dev.macterm.desktop",
+  "build": {
+    "beforeBuildCommand": "bun run build:bundle",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ws://127.0.0.1:* http://127.0.0.1:*; worker-src 'self' blob:; child-src 'self' blob:"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.ico"],
+    "resources": {
+      "../server": "macterm/server",
+      "../shared": "macterm/shared",
+      "../config": "macterm/config",
+      "../dist": "macterm/dist",
+      "../package.json": "macterm/package.json",
+      "../node_modules/ws": "macterm/node_modules/ws",
+      "../node_modules/@lydell": "macterm/node_modules/@lydell",
+      "../vendor/node/node.exe": "macterm-runtime/node.exe"
+    },
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "displayLanguageSelector": false
+      }
+    }
+  }
+}

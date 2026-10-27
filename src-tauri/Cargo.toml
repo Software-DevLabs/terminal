@@ -1,0 +1,24 @@
+[package]
+name = "macterm"
+version = "0.1.0"
+description = "A Mac-Terminal-styled terminal for Windows with tmux-style panes"
+edition = "2021"
+rust-version = "1.77"
+
+[lib]
+name = "macterm_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+rand = "0.8"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = "s"
+strip = true
+panic = "abort"
